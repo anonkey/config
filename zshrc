@@ -2,7 +2,7 @@
 export PATH=/nfs/zfs-student-4/users/2013/tseguier/sh_plugins/bin/:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/nfs/zfs-student-4/users/2013/tseguier/.brew/bin
 #export $BROWSER=cat
 # un VRAI éditeur de texte ;)
-export EDITOR=/usr/bin/vim
+#export EDITOR=/usr/bin/vim
 export RANDFILE=/dev/random
 
 
@@ -117,7 +117,7 @@ zstyle ':completion:*:manuals.(^1*)' insert-sections true
 ## `reverse' to sort in decreasing order
 ## If the style is set to any other value, or is unset, files will be
 ## sorted alphabetically by name.
-#zstyle ':completion:*' file-sort name
+zstyle ':completion:*' file-sort name
 
 ## how many completions switch on menu selection
 ## use 'long' to start menu compl. if list is bigger than screen
@@ -141,6 +141,8 @@ zstyle ':completion:*:functions' ignored-patterns '_*'
 ## completion caching
 zstyle ':completion::complete:*' use-cache 1
 zstyle ':completion::complete:*' cache-path ~/.zcompcache/$HOST
+
+  
 
 ## add colors to completions
 zstyle ':completion:*' list-colors ${(s.:.)LSCOLORS}
@@ -187,14 +189,16 @@ alias clean='make clean'
 alias tf='tail -F'
 alias mk='mkdir-cd'
 alias ip="ifconfig | grep 'inet'"
-alias zls="shzip"
-alias ports="scan-port"
+alias aspi='wget -rkpE'
+alias siz='du -sh'
+alias pt='peer_tools'
 
 # Git
 alias gc='git clone'
 alias ga='git add'
 alias gco='git commit -m'
 alias gp='git push'
+alias gpl='git pull'
 
 # Taf
 alias taf='. taf'
@@ -315,7 +319,7 @@ key[PageDown]=${terminfo[knp]}
 # setup key accordingly
 [[ -n "${key[Home]}"     ]]  && bindkey  "${key[Home]}"     beginning-of-line
 [[ -n "${key[End]}"      ]]  && bindkey  "${key[End]}"      end-of-line
-[[ -n "${key[Insert]}"   ]]  && bindkey  "${key[Insert]}"   overwrite-mode
+##[[ -n "${key[Insert]}"   ]]  && bindkey  "${key[Insert]}"   overwrite-mode
 [[ -n "${key[Delete]}"   ]]  && bindkey  "${key[Delete]}"   delete-char
 [[ -n "${key[Up]}"       ]]  && bindkey  "${key[Up]}"       up-line-or-history
 [[ -n "${key[Down]}"     ]]  && bindkey  "${key[Down]}"     down-line-or-history
@@ -323,6 +327,9 @@ key[PageDown]=${terminfo[knp]}
 [[ -n "${key[Right]}"    ]]  && bindkey  "${key[Right]}"    forward-char
 [[ -n "${key[PageUp]}"   ]]  && bindkey  "${key[PageUp]}"   beginning-of-buffer-or-history
 [[ -n "${key[PageDown]}" ]]  && bindkey  "${key[PageDown]}" end-of-buffer-or-history
+bindkey '<ctrl-a>' beginning-of-line
+bindkey '<ctrl-e>' end-of-line
+
 
 insert-datestamp() { LBUFFER+=${(%):-'%D{%d-%m-%Y }'}; }
 zle -N insert-datestamp
@@ -335,32 +342,10 @@ zle -N insert-timestamp
 bindkey '^Et' insert-timestamp
 
 mkdir-cd() {
-    mkdir -p "$@" && cd "$@"
+	mkdir $1
+	cd $1
 }
 zle -N mkdir-cd
-
-shzip() {
-    emulate -L zsh
-    unzip -l $1 | $PAGER
-}
-zle -N shzip
-
-# function ansi-colors()
-#f5# Display ANSI colors
-ansi-colors() {
-    typeset esc="\033[" line1 line2
-    echo " _ _ _40 _ _ _41_ _ _ _42 _ _ 43_ _ _ 44_ _ _45 _ _ _ 46_ _ _ 47_ _ _ 49_ _"
-    for fore in 30 31 32 33 34 35 36 37; do
-        line1="$fore "
-        line2="   "
-        for back in 40 41 42 43 44 45 46 47 49; do
-            line1="${line1}${esc}${back};${fore}m Normal ${esc}0m"
-            line2="${line2}${esc}${back};${fore};1m Bold   ${esc}0m"
-        done
-        echo -e "$line1\n$line2"
-    done
-}
-
 
 ### jump behind the first word on the cmdline.
 ### useful to add options.
@@ -377,83 +362,6 @@ function jump_after_first_word() {
 zle -N jump_after_first_word
 #k# jump to after first word (for adding options)
 bindkey '^J1' jump_after_first_word
-
-## Scan port with netcat
-scan-port() {
-    if (( ${#argv} != 3 )) ; then
-        printf 'usage: scan-port <Host> <Start port> <End port>\n' >&2
-        return 1
-    fi
-	nc -vz $1 "$2"-$3
-}
-zle -N scan-port
-
-
-#Git save conf file
-backconf() {
-    emulate -L zsh
-    [[ -n ~/bak ]] && mkdir ~/bak || return 1
-	cp ~/.zshrc ~/bak/zshrc
-	cp ~/.vimrc ~/bak/vimrc
-	cp -R ~/.vim ~/bak/vim
-	cp -R ~/sh_plugins ~/bak/sh_plugins
-}
-# }}}
-zle -N backconf
-
-# retrieve weather information on the console
-# Usage example: 'weather LOWG'
-weather() {
-    emulate -L zsh
-    [[ -n "$1" ]] || {
-        print 'Usage: weather <station_id>' >&2
-        print 'List of stations: http://en.wikipedia.org/wiki/List_of_airports_by_ICAO_code'>&2
-        return 1
-    }
-
-    local VERBOSE="yes"    # TODO: Make this a command line switch
-
-    local ODIR=`pwd`
-    local PLACE="${1:u}"
-    local DIR="${HOME}/.weather"
-    local LOG="${DIR}/log"
-
-    [[ -d ${DIR} ]] || {
-        print -n "Creating ${DIR}: "
-        mkdir ${DIR}
-        print 'done'
-    }
-
-    print "Retrieving information for ${PLACE}:"
-    print
-    cd ${DIR} && wget -T 10 --no-verbose --output-file=$LOG --timestamping http://weather.noaa.gov/pub/data/observations/metar/decoded/$PLACE.TXT
-
-    if [[ $? -eq 0 ]] ; then
-        if [[ -n "$VERBOSE" ]] ; then
-            cat ${PLACE}.TXT
-        else
-            DATE=$(grep 'UTC' ${PLACE}.TXT | sed 's#.* /##')
-            TEMPERATURE=$(awk '/Temperature/ { print $4" degree Celcius / " $2" degree Fahrenheit" }' ${PLACE}.TXT | tr -d '(')
-            echo "date: $DATE"
-            echo "temp:  $TEMPERATURE"
-        fi
-    else
-        print "There was an error retrieving the weather information for $PLACE" >&2
-        cat $LOG
-        cd $ODIR
-        return 1
-    fi
-    cd $ODIR
-}
-# }}}
-
-# send files via netcat
-# on sending side:
-#  send() {j=$*; tar cpz ${j/%${!#}/}|nc -w 1 ${!#} 51330;}
-#  send dir* $HOST
-#  alias receive='nc -vlp 51330 | tar xzvp'
-
-
 
 #Activer l'historique des commandes:
 HISTFILE=~/.history
@@ -724,24 +632,6 @@ H-Glob() {
 }
 alias help-zshglob=H-Glob
 
-any() {
-    emulate -L zsh
-    unsetopt KSH_ARRAYS
-    if [[ -z "$1" ]] ; then
-        echo "any - grep for process(es) by keyword" >&2
-        echo "Usage: any <keyword>" >&2 ; return 1
-    else
-        ps xauwww | grep -i --color=auto "[${1[1]}]${1[2,-1]}"
-    fi
-}
-
-# print hex value of a number
-hex() {
-    emulate -L zsh
-    [[ -n "$1" ]] && printf "%x\n" $1 || { print 'Usage: hex <number-to-convert>' ; return 1 }
-}
-
-
 # support colors in less
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;31m'
@@ -752,3 +642,4 @@ export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 ## Login Pic
 startanim
+
