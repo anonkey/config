@@ -1,9 +1,68 @@
 #!/usr/bin/env zsh
-export PATH=/nfs/zfs-student-4/users/2013/tseguier/sh_plugins/bin/:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/nfs/zfs-student-4/users/2013/tseguier/.brew/bin
+#
+autoload colors; colors
+###----------------export-----------
+# support colors in less
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
+#Activer l'historique des commandes:
+HISTFILE=~/.history
+HISTSIZE=5000
+SAVEHIST=10000
+export HISTFILE SAVEHIST
+export PATH=/home/key/sh_plugins/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/nfs/zfs-student-4/users/2013/tseguier/.brew/bin
 #export $BROWSER=cat
 # un VRAI éditeur de texte ;)
 #export EDITOR=/usr/bin/vim
 export RANDFILE=/dev/random
+## Prompts
+##		Spelling prompt
+SPROMPT='zsh: correct '%R' : '%r' ? ([Y]es/[N]o/[E]dit/[A]bort) '
+
+##		Std prompt
+PROMPT="%B%{$fg[red]%}[%T]%{$reset_color%}%{$fg[green]%}%B %n:%1~/%{$reset_color%}%B%#~>%b "
+
+##		Std right prompt
+RPROMPT="%{$fg[green]%}%B[(%?) %D{%d/%m/%y}]%{$reset_color%}" 
+##		Secondary prompt, printed when the shell needs more information to complete a command.
+PS2="%{$fg[green]%}%B\`%_%{$reset_color%}> "
+##		Selection prompt used within a select loop.
+PS3="?# "
+##		The execution trace prompt (setopt xtrace). default: '+%N:%i>'
+PS4="%{$fg[green]%}%B|->+%N:%i:%_%{$reset_color%} > "
+## LSCOLORS
+export CLICOLOR=1
+## Colors defines
+DIR=ex
+SYM_LINK=xe
+SOCKET=Fx
+PIPE=dx
+EXE=Bx
+BLOCK_SP=Cx
+CHAR_SP=Dx
+EXE_SUID=hb
+EXE_GUID=ad
+DIR_STICKY=ex
+DIR_WO_STICKY=ex
+## Next, we want to assign the values above to the LSCOLORS variable and export it, therefore we need to specify:
+export LSCOLORS="$DIR$SYM_LINK$SOCKET$PIPE$EXE$BLOCK_SP$CHAR_SP$EXE_SUID$EXE_GUID$DIR_STICKY$DIR_WO_STICKY"
+# C'est plus joli quand grep met en couleur l'expression reconnue:
+export GREP_COLOR="01;31"
+# check for user, if not running as root set $SUDO to sudo
+(( EUID != 0 )) && SUDO='sudo' || SUDO=''
+DIRSTACKSIZE=${DIRSTACKSIZE:-20}
+DIRSTACKFILE=${DIRSTACKFILE:-${HOME}/.zdirs}
+if [[ -f ${DIRSTACKFILE} ]] && [[ ${#dirstack[*]} -eq 0 ]] ; then
+    dirstack=( ${(f)"$(< $DIRSTACKFILE)"} )
+    # "cd -" won't work after login by just setting $OLDPWD, so
+    [[ -d $dirstack[1] ]] && cd $dirstack[1] && cd $OLDPWD
+fi
+
 
 
 # {{{ check for version/system
@@ -78,15 +137,19 @@ isutfenv() {
     esac
 }
 
-# check for user, if not running as root set $SUDO to sudo
-(( EUID != 0 )) && SUDO='sudo' || SUDO=''
 
-# Complétion
+#---------------------------Complétion----------
 autoload -U compinit
 compinit -C
 autoload -U zstyle+
 ## complete less
 zstyle ':completion:*' completer _expand _complete _list _ignored _approximate
+
+## completion caching
+zstyle ':completion::complete:*' use-cache 1
+zstyle ':completion::complete:*' cache-path ~/.zcompcache/$HOST
+
+
 ## allow one error
 ##zstyle ':completion:*:approximate:*' max-errors 1 numeric
 ### allow one error for every three characters typed in approximate completer
@@ -127,7 +190,6 @@ zstyle ':completion:*' file-sort name
 # des couleurs pour la complétion
 # faites un kill -9 <tab><tab> pour voir :)
 zmodload zsh/complist
-setopt extendedglob
 
 ## offer indexes before parameters in subscripts
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
@@ -137,11 +199,6 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
 ## ignore completion functions (until the _ignored completer)
 zstyle ':completion:*:functions' ignored-patterns '_*'
-
-## completion caching
-zstyle ':completion::complete:*' use-cache 1
-zstyle ':completion::complete:*' cache-path ~/.zcompcache/$HOST
-
   
 
 ## add colors to completions
@@ -153,145 +210,24 @@ zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
 ## filename suffixes to ignore during completion (except after rm command)
 zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.(o|c~|old|pro|zwc|sw)'
 
-### Key bindings
+zstyle ':completion:*:processes-names' command 'ps axho command' 
+zstyle ':completion:*:urls' local 'www' '/var/www/htdocs' 'public_html'
+zstyle ':completion:*' hosts $(awk '/^[^#]/ {print $2 $3" "$4" "$5}' /etc/hosts | grep -v ip6- && grep "^#%" /etc/hosts | awk -F% '{print $2}') 
+zstyle ':completion:*:functions' ignored-patterns '_*'
+zstyle ':completion:*:*:*:users' ignored-patterns \
+zstyle ':completion:*:scp:*' tag-order \
+zstyle ':completion:*:scp:*' group-order \
+zstyle ':completion:*:ssh:*' tag-order \
+zstyle ':completion:*:ssh:*' group-order
+
+# Make the list prompt friendly
+zstyle ':completion:*' list-prompt '%SAt %p: Hit TAB for more, or the character to insert%s'
+
+# Make the selection prompt friendly when there are a lot of choices
+zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+
+##----------------------------- Key bindings-----------------------
 #bindkey "^x^e" expand-cmd-path
-
-# Correction des commandes
-setopt correctall
-
-autoload colors; colors
-## Prompts
-##		Spelling prompt
-SPROMPT='zsh: correct '%R' : '%r' ? ([Y]es/[N]o/[E]dit/[A]bort) '
-
-##		Std prompt
-PROMPT="%B%{$fg[red]%}[%T]%{$reset_color%}%{$fg[green]%}%B %n:%1~/%{$reset_color%}%B%#~>%b "
-
-##		Std right prompt
-RPROMPT="%{$fg[green]%}%B[(%?) %D{%d/%m/%y}]%{$reset_color%}" 
-##		Secondary prompt, printed when the shell needs more information to complete a command.
-PS2="%{$fg[green]%}%B\`%_%{$reset_color%}> "
-##		Selection prompt used within a select loop.
-PS3="?# "
-##		The execution trace prompt (setopt xtrace). default: '+%N:%i>'
-PS4="%{$fg[green]%}%B|->+%N:%i:%_%{$reset_color%} > "
-
-
-
-# Les alias marchent comme sous bash
-alias src='source ~/.zshrc'
-alias jobs='jobs -l'
-alias nrma="norminette *.[hc]"
-alias nrm="norminette"
-alias re='make re'
-alias fclean='make fclean'
-alias clean='make clean'
-alias tf='tail -F'
-alias mk='mkdir-cd'
-alias ip="ifconfig | grep 'inet'"
-alias aspi='wget -rkpE'
-alias siz='du -sh'
-alias pt='peer_tools'
-
-# Git
-alias gc='git clone'
-alias ga='git add'
-alias gco='git commit -m'
-alias gp='git push'
-alias gpl='git pull'
-
-# Taf
-alias taf='. taf'
-alias staf='taf -s'
-alias ltaf='taf -l'
-alias rtaf='taf -r'
-
-# Ls
-alias l='ls'
-alias ls='ls'
-alias la='ls -a'
-alias lla='ls -la'
-alias ll='ls -l'
-alias lr='ls -R'
-alias llr='ls -lR'
-alias lar='ls -aR'
-alias llar='ls -laR'
-
-# Cp mv
-alias cp='cp -R'
-alias mv='mv -R'
-
-# Brew
-alias search="brew search"
-alias show="brew list"
-alias install='brew install'
-alias update='brew update'
-alias upgrade='brew upgrade'
-
-# Local Func
-alias sX="simple-extract"
-
-# --// Pipes //--
-alias -g G='| grep'
-alias -g S='| sort'
-alias -g L='| less'
-alias -g N1='1>/dev/null'
-alias -g N2='2>/dev/null'
-alias -g Na='&>/dev/null'
-alias -g T='| tail'
-alias -g H='| head'
-alias -g W='| wc'
-
-# --//Suffixes\\--
-alias -s c=$EDITOR
-alias -s py=$EDITOR
-alias -s rb=$EDITOR
-alias -s cpp=$EDITOR
-alias -s hpp=$EDITOR
-alias -s h=$EDITOR
-alias -s php=$EDITOR
-
-# marre de se faire corriger par zsh ;)
-alias sl='ls'
-# Alias df -h
-alias df='df -h'
-
-## LSCOLORS
-export CLICOLOR=1
-## Colors defines
-DIR=ex
-SYM_LINK=xe
-SOCKET=Fx
-PIPE=dx
-EXE=Bx
-BLOCK_SP=Cx
-CHAR_SP=Dx
-EXE_SUID=hb
-EXE_GUID=ad
-DIR_STICKY=ex
-DIR_WO_STICKY=ex
-## Next, we want to assign the values above to the LSCOLORS variable and export it, therefore we need to specify:
-export LSCOLORS="$DIR$SYM_LINK$SOCKET$PIPE$EXE$BLOCK_SP$CHAR_SP$EXE_SUID$EXE_GUID$DIR_STICKY$DIR_WO_STICKY"
-
-# C'est plus joli quand grep met en couleur l'expression reconnue:
-export GREP_COLOR="01;31"
-# on ne peut pas utiliser GREP_OPTIONS pour rajouter la couleur car cela 
-# casse /usr/bin/grep sur les freebsd
-#export GREP_OPTIONS="--color=auto"
-alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
-alias fgrep='fgrep --color=auto'
-
-
-
-# Les trois lignes suivantes changent le comportement de rm, cp et mv de
-# manière à ce que ces programmes demandent confirmation avant d'effacer un
-# fichier.
-alias rm="nocorrect rm -i"
-alias mv="nocorrect mv -i"
-alias cp="nocorrect cp -i"
-
-
 
 ## Use Ctrl-left-arrow and Ctrl-right-arrow for jumping to
 ## word-beginnings on the CL
@@ -341,10 +277,7 @@ zle -N insert-timestamp
 #k# Insert a timestamp on the command line (yyyy-mm-dd)
 bindkey '^Et' insert-timestamp
 
-mkdir-cd() {
-	mkdir $1
-	cd $1
-}
+
 zle -N mkdir-cd
 
 ### jump behind the first word on the cmdline.
@@ -363,22 +296,6 @@ zle -N jump_after_first_word
 #k# jump to after first word (for adding options)
 bindkey '^J1' jump_after_first_word
 
-#Activer l'historique des commandes:
-HISTFILE=~/.history
-HISTSIZE=5000
-SAVEHIST=10000
-export HISTFILE SAVEHIST
-
-# dirstack handling {{{
-
-DIRSTACKSIZE=${DIRSTACKSIZE:-20}
-DIRSTACKFILE=${DIRSTACKFILE:-${HOME}/.zdirs}
-
-if [[ -f ${DIRSTACKFILE} ]] && [[ ${#dirstack[*]} -eq 0 ]] ; then
-    dirstack=( ${(f)"$(< $DIRSTACKFILE)"} )
-    # "cd -" won't work after login by just setting $OLDPWD, so
-    [[ -d $dirstack[1] ]] && cd $dirstack[1] && cd $OLDPWD
-fi
 
 chpwd() {
     local -ax my_stack
@@ -392,13 +309,6 @@ chpwd() {
 
 # }}}
 
-## History options
-setopt incappendhistory \
-	extendedhistory \
-	histfindnodups \
-	histreduceblanks \
-	histignorealldups \
-	histsavenodups
 
 
 # utility functions {{{
@@ -630,16 +540,122 @@ H-Glob() {
   print **/*(g:users:)  # Recursively match all files that are owned by group 'users'
   echo /proc/*/cwd(:h:t:s/self//) # Analogous to >ps ax | awk '{print $1}'<"
 }
-alias help-zshglob=H-Glob
 
-# support colors in less
-export LESS_TERMCAP_mb=$'\E[01;31m'
-export LESS_TERMCAP_md=$'\E[01;31m'
-export LESS_TERMCAP_me=$'\E[0m'
-export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_so=$'\E[01;44;33m'
-export LESS_TERMCAP_ue=$'\E[0m'
-export LESS_TERMCAP_us=$'\E[01;32m'
+mkdir-cd() {
+	mkdir $1
+	cd $1
+}
+
+##----------------alias------------
+alias help-zshglob=H-Glob
+# Les alias marchent comme sous bash
+alias src='source ~/.zshrc'
+alias jobs='jobs -l'
+alias nrma="norminette *.[hc]"
+alias nrm="norminette"
+alias re='make re'
+alias fclean='make fclean'
+alias clean='make clean'
+alias tf='tail -F'
+alias mk='mkdir-cd'
+alias ip="ifconfig | grep 'inet'"
+alias aspi='wget -rkpE'
+alias siz='du -sh'
+alias pt='peer_tools'
+
+# Git
+alias gc='git clone'
+alias ga='git add'
+alias gco='git commit -m'
+alias gp='git push'
+alias gpl='git pull'
+
+# Taf
+alias taf='. taf'
+alias staf='taf -s'
+alias ltaf='taf -l'
+alias rtaf='taf -r'
+
+# Ls
+alias l='ls'
+alias ls='ls'
+alias la='ls -a'
+alias lla='ls -la'
+alias ll='ls -l'
+alias lr='ls -R'
+alias llr='ls -lR'
+alias lar='ls -aR'
+alias llar='ls -laR'
+
+# Cp mv
+alias cp='cp -R'
+alias mv='mv -R'
+
+# Brew
+alias search="brew search"
+alias show="brew list"
+alias install='brew install'
+alias update='brew update'
+alias upgrade='brew upgrade'
+
+# Local Func
+alias sX="simple-extract"
+
+# --// Pipes //--
+alias -g G='| grep'
+alias -g S='| sort'
+alias -g L='| less'
+alias -g N1='1>/dev/null'
+alias -g N2='2>/dev/null'
+alias -g Na='&>/dev/null'
+alias -g T='| tail'
+alias -g H='| head'
+alias -g W='| wc'
+
+# --//Suffixes\\--
+alias -s c=$EDITOR
+alias -s py=$EDITOR
+alias -s rb=$EDITOR
+alias -s cpp=$EDITOR
+alias -s hpp=$EDITOR
+alias -s h=$EDITOR
+alias -s php=$EDITOR
+
+# marre de se faire corriger par zsh ;)
+alias sl='ls'
+# Alias df -h
+alias df='df -h'
+# on ne peut pas utiliser GREP_OPTIONS pour rajouter la couleur car cela 
+# casse /usr/bin/grep sur les freebsd
+#export GREP_OPTIONS="--color=auto"
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+
+
+# Les trois lignes suivantes changent le comportement de rm, cp et mv de
+# manière à ce que ces programmes demandent confirmation avant d'effacer un
+# fichier.
+alias rm="nocorrect rm -i"
+alias mv="nocorrect mv -i"
+alias cp="nocorrect cp -i"
+
+
+
+##----------------setopt-----------
+setopt no_beep # don't beep on error
+
+## History options
+setopt incappendhistory \
+	extendedhistory \
+	histfindnodups \
+	histreduceblanks \
+	histignorealldups \
+	histsavenodups
+# Correction des commandes
+setopt correctall
+setopt extendedglob
+
 ## Login Pic
 startanim
-
