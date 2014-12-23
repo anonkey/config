@@ -87,7 +87,7 @@ highlight CKeywReturn ctermbg=green guibg=green
 highlight EOFErr ctermbg=red guibg=red
 "au BufWinEnter * silent loadview
 au BufWinEnter * let w:m1=matchadd('ErrorMsg', '\%>80v.\+', -1)
-au BufWinEnter *.c,*.h let w:m2=matchadd('ExtraWhitespace', '\s\+$\| \+\ze\t\|  \|\t\zs \+', -1)
+au BufWinEnter *.c,*.h let w:m2=matchadd('ExtraWhitespace', '\s\+$\| \+\ze\t\|  \+\|\t\zs \+', -1)
 au BufWinEnter *.c,*.h let w:m3=matchadd('MissingWhitespace', ',[^ ]', -1)
 au BufWinEnter *.c,*.h let w:m4=matchadd('CKeywSpaceNext', '\(ifndef\|define\|while\|return\|const\|typedef\|extern\|unsigned\)[^ ]', -1)
 au BufWinEnter *.c let w:m5=matchadd('CKeywReturn', 'return [^(;]', -1)

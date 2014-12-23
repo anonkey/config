@@ -545,6 +545,31 @@ mkdir-cd() {
 	mkdir $1
 	cd $1
 }
+# -------------------------------------------------------------------
+# display a neatly formatted path
+# -------------------------------------------------------------------
+path() {
+  echo $PATH | tr ":" "\n" | \
+    awk "{ sub(\"/usr\",   \"$fg_no_bold[green]/usr$reset_color\"); \
+           sub(\"/bin\",   \"$fg_no_bold[blue]/bin$reset_color\"); \
+           sub(\"/opt\",   \"$fg_no_bold[cyan]/opt$reset_color\"); \
+           sub(\"/sbin\",  \"$fg_no_bold[magenta]/sbin$reset_color\"); \
+           sub(\"/local\", \"$fg_no_bold[yellow]/local$reset_color\"); \
+           print }"
+}
+# -------------------------------------------------------------------
+# shell function to define words
+# http://vikros.tumblr.com/post/23750050330/cute-little-function-time
+# -------------------------------------------------------------------
+givedef() {
+  if [[ $# -ge 2 ]] then
+    echo "givedef: too many arguments" >&2
+    return 1
+  else
+    curl "dict://dict.org/d:$1"
+  fi
+}
+
 
 ##----------------alias------------
 alias help-zshglob=H-Glob
@@ -564,11 +589,35 @@ alias siz='du -sh'
 alias pt='peer_tools'
 
 # Git
+# -------------------------------------------------------------------
+# Git
+# -------------------------------------------------------------------
 alias gc='git clone'
 alias ga='git add'
 alias gco='git commit -m'
+alias gca='git commit -am'
 alias gp='git push'
 alias gpl='git pull'
+alias gl='git log'
+alias glog="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias gs='git status'
+alias gd='git diff'
+alias gb='git branch'
+alias gck='git checkout'
+alias gckb='git checkout -b'
+alias gra='git remote add'
+alias grr='git remote rm'
+# alias gta='git tag -a -m'
+alias gf='git reflog'
+# alias gv='git log --pretty=format:'%s' | cut -d " " -f 1 | sort | uniq -c | sort -nr'
+# leverage aliases from ~/.gitconfig
+alias gh='git hist'
+alias gt='git today'
+# curiosities 
+# gsh shows the number of commits for the current repos for all developers
+alias gsh="git shortlog | grep -E '^[ ]+\w+' | wc -l"
+# gu shows a list of all developers and the number of commits they've made
+alias gu="git shortlog | grep -E '^[^ ]'"
 
 # Taf
 alias taf='. taf'
@@ -642,6 +691,12 @@ alias mv="nocorrect mv -i"
 alias cp="nocorrect cp -i"
 
 
+# -------------------------------------------------------------------
+# Source: http://aur.archlinux.org/packages/lolbash/lolbash/lolbash.sh
+# -------------------------------------------------------------------
+alias wtf='dmesg'
+alias onoz='cat /var/log/errors.log'
+alias rtfm='man'
 
 ##----------------setopt-----------
 setopt no_beep # don't beep on error
