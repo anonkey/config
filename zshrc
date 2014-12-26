@@ -15,7 +15,8 @@ HISTFILE=~/.history
 HISTSIZE=5000
 SAVEHIST=10000
 export HISTFILE SAVEHIST
-export PATH=/home/key/sh_plugins/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/nfs/zfs-student-4/users/2013/tseguier/.brew/bin
+export PATH=/home/key/sh_plugins/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/nfs/zfs-student-5/users/2013_paris/tseguier/.brew/bin:/nfs/zfs-student-5/users/2013_paris/tseguier/sh_plugins/bin
+
 #export $BROWSER=cat
 # un VRAI éditeur de texte ;)
 #export EDITOR=/usr/bin/vim
@@ -214,12 +215,9 @@ zstyle ':completion:*:processes-names' command 'ps axho command'
 zstyle ':completion:*:urls' local 'www' '/var/www/htdocs' 'public_html'
 zstyle ':completion:*' hosts $(awk '/^[^#]/ {print $2 $3" "$4" "$5}' /etc/hosts | grep -v ip6- && grep "^#%" /etc/hosts | awk -F% '{print $2}') 
 zstyle ':completion:*:functions' ignored-patterns '_*'
-zstyle ':completion:*:*:*:users' ignored-patterns \
-zstyle ':completion:*:scp:*' tag-order \
-zstyle ':completion:*:scp:*' group-order \
-zstyle ':completion:*:ssh:*' tag-order \
-zstyle ':completion:*:ssh:*' group-order
-
+zstyle ':completion:*:*:*:users' ignored-patterns 
+zstyle ':completion:*:(ssh|scp|ftp):*' hosts $hosts
+zstyle ':completion:*:(ssh|scp|ftp):*' users $users
 # Make the list prompt friendly
 zstyle ':completion:*' list-prompt '%SAt %p: Hit TAB for more, or the character to insert%s'
 
@@ -598,10 +596,12 @@ alias gco='git commit -m'
 alias gca='git commit -am'
 alias gp='git push'
 alias gpl='git pull'
-alias gl='git log'
-alias glog="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias glog='git log'
+alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias gs='git status'
 alias gd='git diff'
+alias gm='git merge'
+alias gmt='git mergetool'
 alias gb='git branch'
 alias gck='git checkout'
 alias gckb='git checkout -b'
@@ -652,8 +652,14 @@ alias sX="simple-extract"
 
 # --// Pipes //--
 alias -g G='| grep'
+alias -g GI='| grep -i'
+alias -g GR='| grep -v'
+alias -g GRI='| grep -vi'
+alias -g CE='| cat -e'
+alias -g C='| cat'
 alias -g S='| sort'
 alias -g L='| less'
+alias -g M='| more'
 alias -g N1='1>/dev/null'
 alias -g N2='2>/dev/null'
 alias -g Na='&>/dev/null'
@@ -700,6 +706,7 @@ alias rtfm='man'
 
 ##----------------setopt-----------
 setopt no_beep # don't beep on error
+setopt hist_verify # don't beep on error
 
 ## History options
 setopt incappendhistory \
@@ -711,6 +718,7 @@ setopt incappendhistory \
 # Correction des commandes
 setopt correctall
 setopt extendedglob
+unsetopt list_ambigous
 
 ## Login Pic
 startanim
