@@ -592,6 +592,7 @@ alias aspi='wget -rkpE'
 alias siz='du -sh'
 alias pt='peer_tools'
 alias bakconf='\cp -f ~/.zshrc ~/config/zshrc && \cp -f ~/.vimrc ~/config/vimrc && \cp -Rf ~/.vim ~/config/vim; cd ~/config && git add -A && git commit -am "autocommit" && git push origin master && cd -'
+alias restconf='\cp -f ~/config/zshrc ~/.zshrc && \cp -f ~/config/vimrc ~/.vimrc && \cp -Rf ~/config/vim ~/.vim;'
 
 # Git
 # -------------------------------------------------------------------
