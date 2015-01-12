@@ -591,8 +591,8 @@ alias ip="ifconfig | grep 'inet'"
 alias aspi='wget -rkpE'
 alias siz='du -sh'
 alias pt='peer_tools'
-alias bakconf='\cp -f ~/.zshrc ~/config/zshrc && \cp -f ~/.vimrc ~/config/vimrc && \cp -Rf ~/.vim ~/config/vim; cd ~/config && git add -A && git commit -am "autocommit" && git push origin master && cd -'
-alias restconf='\cp -f ~/config/zshrc ~/.zshrc && \cp -f ~/config/vimrc ~/.vimrc && \cp -Rf ~/config/vim ~/.vim;'
+alias bakconf='\cp -rf ~/sh_plugins ~/config/sh_plugins && \cp -f ~/.zshrc ~/config/zshrc && \cp -f ~/.vimrc ~/config/vimrc && \cp -Rf ~/.vim ~/config/vim; cd ~/config && git add -A && git commit -am "autocommit" && git push origin master && cd -'
+alias restconf='\cp -rf ~/config/sh_plugins ~/sh_plugins && \cp -f ~/config/zshrc ~/.zshrc && \cp -f ~/config/vimrc ~/.vimrc && \cp -Rf ~/config/vim ~/.vim;'
 
 # Git
 # -------------------------------------------------------------------
