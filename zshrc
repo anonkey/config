@@ -15,7 +15,7 @@ HISTFILE=~/.history
 HISTSIZE=5000
 SAVEHIST=10000
 export HISTFILE SAVEHIST
-export PATH=/home/key/sh_plugins/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/nfs/zfs-student-5/users/2013_paris/tseguier/.brew/bin:/nfs/zfs-student-5/users/2013_paris/tseguier/sh_plugins/bin
+export PATH=/home/key/sh_plugins/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin://nfs/zfs-student-5/users/2013_paris/tseguier/.brew/bin/bin:nfs/zfs-student-5/users/2013_paris/tseguier/.brew/bin:/nfs/zfs-student-5/users/2013_paris/tseguier/sh_plugins/bin
 
 #export $BROWSER=cat
 # un VRAI éditeur de texte ;)
@@ -23,10 +23,14 @@ export PATH=/home/key/sh_plugins/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbi
 export RANDFILE=/dev/random
 ## Prompts
 ##		Spelling prompt
-SPROMPT='zsh: correct '%R' : '%r' ? ([Y]es/[N]o/[E]dit/[A]bort) '
+SPROMPT='zsh: correct '%R' : '%r' ? ([Y]es/[n]o/[e]dit/[a]bort) '
 
-##		Std prompt
-PROMPT="%B%{$fg[red]%}[%T]%{$reset_color%}%{$fg[green]%}%B %n:%1~/%{$reset_color%}%B%#~>%b "
+if [[ -z $SSH_CLIENT ]]; then
+	##		Std prompt
+	PROMPT="%B%{$fg[red]%}[%T]%{$reset_color%}%{$fg[green]%}%B %n:%1~/%{$reset_color%}%B%#~>%b "
+else
+	PROMPT="%B%{$fg[cyan]%}[%{$fg[red]%}ssh:%B%{$fg[red]%}[%T]%{$reset_color%}%{$fg[green]%}%B %n:%1~/%{$reset_color%}%B%#~>%b "
+fi
 
 ##		Std right prompt
 RPROMPT="%{$fg[green]%}%B[(%?) %D{%d/%m/%y}]%{$reset_color%}" 
@@ -210,6 +214,7 @@ zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
 
 ## filename suffixes to ignore during completion (except after rm command)
 zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.(o|c~|old|pro|zwc|sw)'
+zstyle ':completion:*:options' list-colors '=^(-- *)=34'
 
 zstyle ':completion:*:processes-names' command 'ps axho command' 
 zstyle ':completion:*:urls' local 'www' '/var/www/htdocs' 'public_html'
@@ -574,8 +579,9 @@ alias help-zshglob=H-Glob
 # Les alias marchent comme sous bash
 alias src='source ~/.zshrc'
 alias jobs='jobs -l'
-alias nrma="norminette *.[hc]"
+alias nrma="norminette ***/*.[hc]"
 alias nrm="norminette"
+alias nrms="norminette ***/*.[ch] G Error -B 1"
 alias re='make re'
 alias fclean='make fclean'
 alias clean='make clean'
@@ -585,6 +591,7 @@ alias ip="ifconfig | grep 'inet'"
 alias aspi='wget -rkpE'
 alias siz='du -sh'
 alias pt='peer_tools'
+alias bakconf='\cp -f ~/.zshrc ~/config/zshrc && \cp -f ~/.vimrc ~/config/vimrc && \cp -Rf ~/.vim ~/config/vim; cd ~/config && git add -A && git commit -am "autocommit" && git push origin master && cd -'
 
 # Git
 # -------------------------------------------------------------------
@@ -609,10 +616,11 @@ alias gra='git remote add'
 alias grr='git remote rm'
 # alias gta='git tag -a -m'
 alias gf='git reflog'
-# alias gv='git log --pretty=format:'%s' | cut -d " " -f 1 | sort | uniq -c | sort -nr'
+alias gv='git log --pretty=format:'%s' | cut -d " " -f 1 | sort | uniq -c | sort -nr'
 # leverage aliases from ~/.gitconfig
 alias gh='git hist'
-alias gt='git today'
+alias gt="git log --since=midnight --author='$(git config user.name)' --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias gy="git log --since=1.week --author='$(git config user.name)' --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 # curiosities 
 # gsh shows the number of commits for the current repos for all developers
 alias gsh="git shortlog | grep -E '^[ ]+\w+' | wc -l"
