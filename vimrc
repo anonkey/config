@@ -1,3 +1,4 @@
+source ~/.vimclangcomp
 set wildmenu
 set wildmode=list:longest
 
@@ -39,7 +40,7 @@ endfunction
 
 if has("autocmd")
 filetype plugin indent on
-call pathogen#infect()
+execute pathogen#infect()
 autocmd BufNewFile *.h source ~/.vim/bundle/vim_bundles/hheader/hheader.vim
 ""autocmd BufNewFile t_*.h 
 autocmd BufNewFile main.c source ~/.vim/bundle/vim_bundles/cmain/cmain.vim

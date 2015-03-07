@@ -15,7 +15,7 @@ HISTFILE=~/.history
 HISTSIZE=5000
 SAVEHIST=10000
 export HISTFILE SAVEHIST
-export PATH=/home/key/sh_plugins/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin://nfs/zfs-student-5/users/2013_paris/tseguier/.brew/bin/bin:nfs/zfs-student-5/users/2013_paris/tseguier/.brew/bin:/nfs/zfs-student-5/users/2013_paris/tseguier/sh_plugins/bin
+export PATH=/home/key/sh_plugins/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin:/nfs/zfs-student-5/users/2013_paris/tseguier/.brew/bin/bin:nfs/zfs-student-5/users/2013_paris/tseguier/.brew/bin:/nfs/zfs-student-5/users/2013_paris/tseguier/sh_plugins/bin
 
 #export $BROWSER=cat
 # un VRAI éditeur de texte ;)
