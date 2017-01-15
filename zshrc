@@ -573,6 +573,19 @@ givedef() {
   fi
 }
 
+# -------------------------------------------------------------------
+# shell function to show libc header
+# -------------------------------------------------------------------
+libc() {
+  if [[ $# -ne 1 ]] then
+    echo "libc: usage: libc [name pattern]" >&2
+    return 1
+  else
+	find /usr/include -name "$1"
+  fi
+}
+
+
 
 ##----------------alias------------
 alias help-zshglob=H-Glob
@@ -583,11 +596,14 @@ alias nrma="norminette ***/*.[hc]"
 alias nrm="norminette"
 alias nrms="norminette ***/*.[ch] G Error -B 1"
 alias re='make re'
+alias red='make re DEBUG=1'
+alias maked='make DEBUG=1'
 alias fclean='make fclean'
 alias clean='make clean'
 alias tf='tail -F'
 alias mk='mkdir-cd'
 alias ip="ifconfig | grep 'inet'"
+alias grn="grep -Rn"
 alias aspi='wget -rkpE'
 alias siz='du -sh'
 alias pt='peer_tools'
@@ -645,9 +661,13 @@ alias llr='ls -lR'
 alias lar='ls -aR'
 alias llar='ls -laR'
 
+# Vim
+alias vimp="vim -p"
 # Cp mv
-alias cp='cp -R'
-alias mv='mv -R'
+alias cpr='cp -R'
+alias mvr='mv -R'
+alias rmf='rm -f'
+alias rmrf='rm -f'
 
 # Brew
 alias search="brew search"

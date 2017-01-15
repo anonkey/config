@@ -84,6 +84,8 @@ noremap <C-l> :match
 inoremap <C-l> <Esc>:match
 noremap <C-o> :call Struct("")
 inoremap <C-o> <Esc>:call Struct("")
+map <C-Tab> gt
+map <C-S-Tab> gT
 map <Esc>Oq 1
 map <Esc>Or 2
 map <Esc>Os 3
