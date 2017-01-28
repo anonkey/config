@@ -545,7 +545,7 @@ H-Glob() {
 }
 
 mkdir-cd() {
-	mkdir $1
+	mkdir -p $1
 	cd $1
 }
 # -------------------------------------------------------------------
@@ -589,6 +589,7 @@ libc() {
 
 ##----------------alias------------
 alias help-zshglob=H-Glob
+alias sterm="terminator -m --layout=dfllay"
 # Les alias marchent comme sous bash
 alias src='source ~/.zshrc'
 alias jobs='jobs -l'
@@ -667,7 +668,7 @@ alias vimp="vim -p"
 alias cpr='cp -R'
 alias mvr='mv -R'
 alias rmf='rm -f'
-alias rmrf='rm -f'
+alias rmrf='rm -rf'
 
 # Brew
 alias search="brew search"

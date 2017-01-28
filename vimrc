@@ -2,41 +2,7 @@ source ~/.vimclangcomp
 set wildmenu
 set wildmode=list:longest
 
-function! Struct(name)
-	let name=a:name
-
-
-	execute("tabe t_".name.".h")
-	execute("normal itypedef struct\t\t\ts_".name)
-	execute("normal o{\r}\t\t\t\t\tt_s".name.";")
-	execute("normal o")
-	execute("normal otypedef t_s".name."\t\t*t_".name.";")
-	execute("normal o")
-"	execute("normal :w<CR>")
-
-	execute("tabe ft_".name."_priv.h")
-	execute("normal i#include \"t_".name.".h\"")
-"	execute("normal :w<CR>")
-
-	execute("tabe ft_".name.".h")
-	execute("normal i#include \"t_".name.".h\"")
-	execute("normal o")
-	"enum
-	execute("normal ot_".name."\tft_".name."new();")
-	execute("normal ovoid\t\tft_".name."del(t_".name." *".name."_p);")
-	execute("normal oint\t\t\tft_".name."init(t_".name." ".name.");")
-	execute("normal ovoid\t\tft_".name."clr(t_".name." ".name.");")
-	execute("normal o")
-"	execute("normal :w<CR>")
-"
-	execute("tabe ft_".name.".c")
-	execute("normal ot_".name."\tft_".name."new()\r{\r}\r")
-	execute("normal ovoid\t\tft_".name."del(t_".name." *".name."_p)\r{\r}\r")
-	execute("normal oint\t\t\tft_".name."init(t_".name." ".name.")\r{\r}\r")
-	execute("normal ovoid\t\tft_".name."clr(t_".name." ".name.")\r{\r}\r")
-	execute("normal o")
-"	execute("normal :w<CR>")
-endfunction
+:runtime "~/.vim/bundle/vim_bundles/structgen/structgen.vim"
 
 if has("autocmd")
 filetype plugin indent on
@@ -130,7 +96,7 @@ highlight CKeywSpPar ctermbg=green guibg=green
 highlight CKeywReturn ctermbg=green guibg=green
 highlight EOFErr ctermbg=red guibg=red
 "au BufWinEnter * silent loadview
-au BufWinEnter * let w:m1=matchadd('ErrorMsg', '\%>80v.\+', -1)
+au BufWinEnter *.,*.h let w:m1=matchadd('ErrorMsg', '\%>80v.\+', -1)
 au BufWinEnter *.c,*.h let w:m2=matchadd('ExtraWhitespace', '\s\+$\| \+\ze\t\|  \+\|\t\zs \+', -1)
 au BufWinEnter *.c,*.h let w:m3=matchadd('MissingWhitespace', ',[^ ]', -1)
 au BufWinEnter *.c,*.h let w:m4=matchadd('CKeywSpaceNext', '\(ifndef\|define\|while\|return\|const\|typedef\|extern\|unsigned\)[^ ]', -1)
