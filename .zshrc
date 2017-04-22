@@ -363,6 +363,52 @@ check_com() {
     return 1
 }
 
+backconf() {
+    if [ "$1" != "" ]
+    then
+		if [ -d $1 ]
+		then
+			confdir="$1"
+		else
+			echo 'Usage: backconf [config directory]'
+			return 0
+		fi
+	else
+		confdir=~/config
+    fi
+	cd $confdir
+	cp -r ~/sh_plugins $confdir/sh_plugins \
+		&& cp ~/.zshrc $confdir/zshrc \
+		&& cp ~/.vimrc $confdir/vimrc \
+		&& cp -R ~/.vim  $confdir/vim \
+		&& git add -A \
+		&& git commit -am "autocommit `date`" \
+		&& git push origin master
+	cd -
+}
+
+restconf() {
+    if [ "$1" != "" ]
+    then
+		if [ -d $1 ]
+		then
+			confdir="$1"
+		else
+			echo 'Usage: restconf [config directory]'
+			return 0
+		fi
+	else
+		confdir=~/config
+    fi
+	cd $confdir
+		git pull origin master \
+		&& cp -r $confdir/sh_plugins ~/sh_plugins \
+		&& cp $confdir/zshrc ~/.zshrc \
+		&& cp $confdir/vimrc ~/.vimrc \
+		&& cp -R  $confdir/vim ~/.vim \
+	cd -
+}
+
 ## Usage: simple-extract <file>
 ## Using option -d deletes the original archive file.
 ##f5# Smart archive extractor
@@ -591,13 +637,13 @@ libc() {
 
 
 ##----------------alias------------
+alias contrast='xcalib -a -co'
+alias scrrst='xcalib -c'
+alias setlumi='xrandr --output "eDP1" --brightness'
+alias mkdir="nocorrect mkdir"
 alias help-zshglob=H-Glob
 alias sterm="terminator -m --layout=dfllay"
 # Les alias marchent comme sous bash
-alias scrrst='xcalib -c'
-alias contrast='xcalib -a -co'
-alias portown='netstat -tulpn | grep 1337'
-alias setlumi='xrandr --output "eDP1" --brightness'
 alias src='source ~/.zshrc'
 alias jobs='jobs -l'
 alias nrma="norminette ***/*.[hc]"
@@ -615,17 +661,8 @@ alias grn="grep -Rn"
 alias aspi='wget -rkpE'
 alias siz='du -sh'
 alias pt='peer_tools'
-alias bakconf='\cp -rf ~/sh_plugins ~/config/sh_plugins && \cp -f ~/.zshrc ~/config/zshrc && \cp -f ~/.vimrc ~/config/vimrc && \cp -Rf ~/.vim ~/config/vim; cd ~/config && git add -A && git commit -am "autocommit" && git push origin master && cd -'
-alias restconf='\cp -rf ~/config/sh_plugins ~/sh_plugins && \cp -f ~/config/zshrc ~/.zshrc && \cp -f ~/config/vimrc ~/.vimrc && \cp -Rf ~/config/vim ~/.vim;'
 
-# -------------------------------------------------------------------
-# Web dev
-# -------------------------------------------------------------------
-alias pmk="pm2 kill"
-alias pml="pm2 log"
-alias pmrst="pm2 kill && npm run serv:dev"
-alias npmrs="npm run serv:dev"
-alias ions="ionic serve -b"
+# Git
 # -------------------------------------------------------------------
 # Git
 # -------------------------------------------------------------------
@@ -651,7 +688,6 @@ alias gf='git reflog'
 alias gv='git log --pretty=format:'%s' | cut -d " " -f 1 | sort | uniq -c | sort -nr'
 # leverage aliases from ~/.gitconfig
 alias gh='git hist'
-alias gstat='git log --author="anonkey" --stat'
 alias gt="git log --since=midnight --author='$(git config user.name)' --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias gy="git log --since=1.week --author='$(git config user.name)' --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 # curiosities 
@@ -685,21 +721,12 @@ alias mvr='mv -R'
 alias rmf='rm -f'
 alias rmrf='rm -rf'
 
-# Yaourt
-alias search="yaourt -a"
-alias inst='yaourt'
-alias update='yaourt -Syua'
-alias gupdate='yaourt -Syu --devel --aur'
-alias compil='yaourt -Sb'
-alias uninst='yaourt -Rs'
-
-
-## Brew
-#alias search="brew search"
-#alias show="brew list"
-#alias install='brew install'
-#alias update='brew update'
-#alias upgrade='brew upgrade'
+# Brew
+alias search="brew search"
+alias show="brew list"
+alias install='brew install'
+alias update='brew update'
+alias upgrade='brew upgrade'
 
 # Local Func
 alias sX="simple-extract"

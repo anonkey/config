@@ -11,6 +11,7 @@
 #                                                                              #
 # **************************************************************************** #
 
+set -vx
 if [ $# -lt 2 ]
 then
 	echo "usage : replace tofind newstr [findflags] [replace in filename]"
@@ -33,7 +34,7 @@ do
 	else
 		out=`echo $i | sed -e "s/$1/$2/g"`
 		echo "$i > $out"
-		sed -e "s/$1/$2/g"  $i > $out && rm -f $i
+		sed -n 's/'"'"'\(.*#{.*}.*\)'"'"'/"$1"/p' > $out && rm -f $i
 	fi
 done
 

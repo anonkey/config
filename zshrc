@@ -363,6 +363,52 @@ check_com() {
     return 1
 }
 
+backconf() {
+    if [ "$1" != "" ]
+    then
+		if [ -d $1 ]
+		then
+			confdir="$1"
+		else
+			echo 'Usage: backconf [config directory]'
+			return 0
+		fi
+	else
+		confdir=~/config
+    fi
+	cd $confdir
+	cp -r ~/sh_plugins $confdir/sh_plugins \
+		&& cp ~/.zshrc $confdir/zshrc \
+		&& cp ~/.vimrc $confdir/vimrc \
+		&& cp -R ~/.vim  $confdir/vim \
+		&& git add -A \
+		&& git commit -am "autocommit `date`" \
+		&& git push origin master
+	cd -
+}
+
+restconf() {
+    if [ "$1" != "" ]
+    then
+		if [ -d $1 ]
+		then
+			confdir="$1"
+		else
+			echo 'Usage: restconf [config directory]'
+			return 0
+		fi
+	else
+		confdir=~/config
+    fi
+	cd $confdir
+		git pull origin master \
+		&& cp -r $confdir/sh_plugins ~/sh_plugins \
+		&& cp $confdir/zshrc ~/.zshrc \
+		&& cp $confdir/vimrc ~/.vimrc \
+		&& cp -R  $confdir/vim ~/.vim \
+	cd -
+}
+
 ## Usage: simple-extract <file>
 ## Using option -d deletes the original archive file.
 ##f5# Smart archive extractor
@@ -591,6 +637,10 @@ libc() {
 
 
 ##----------------alias------------
+alias contrast='xcalib -a -co'
+alias scrrst='xcalib -c'
+alias setlumi='xrandr --output "eDP1" --brightness'
+alias mkdir="nocorrect mkdir"
 alias help-zshglob=H-Glob
 alias sterm="terminator -m --layout=dfllay"
 # Les alias marchent comme sous bash
@@ -611,10 +661,16 @@ alias grn="grep -Rn"
 alias aspi='wget -rkpE'
 alias siz='du -sh'
 alias pt='peer_tools'
-alias bakconf='\cp -rf ~/sh_plugins ~/config/sh_plugins && \cp -f ~/.zshrc ~/config/zshrc && \cp -f ~/.vimrc ~/config/vimrc && \cp -Rf ~/.vim ~/config/vim; cd ~/config && git add -A && git commit -am "autocommit" && git push origin master && cd -'
-alias restconf='\cp -rf ~/config/sh_plugins ~/sh_plugins && \cp -f ~/config/zshrc ~/.zshrc && \cp -f ~/config/vimrc ~/.vimrc && \cp -Rf ~/config/vim ~/.vim;'
 
-# Git
+# -------------------------------------------------------------------
+# Web
+# -------------------------------------------------------------------
+alias ions='ionic serve -g'
+alias pmk='pm2 kill'
+alias pml='pm2 log'
+alias npmrs='npm run serv:dev'
+alias pmm='pm2 monit'
+
 # -------------------------------------------------------------------
 # Git
 # -------------------------------------------------------------------

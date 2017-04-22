@@ -1,0 +1,9 @@
+[submodule "bin/projectgen"]
+	path = bin/projectgen
+	url = https://bitbucket.org/anonkey/projgen
+[submodule "bin/gitsunc"]
+	path = bin/gitsunc
+	url = https://github.com/lp177/gitSync
+[submodule "bin/gitsync"]
+	path = bin/gitsync
+	url = https://github.com/lp177/gitSync
