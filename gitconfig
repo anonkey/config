@@ -1,0 +1,25 @@
+[alias]
+st = status
+cm = commit
+cmm = commit -m
+ca = commit --amend
+po = push origin
+br = branch
+co = checkout
+fa = fetch --all
+rb = rebase
+sth = stash
+sthc = stash clear
+sthp = stash pop
+rao = remote add origin
+aa = add -A
+ap = add -p
+
+[core]
+editor = "vim"
+
+[color]
+ui = true
+
+[push]
+default = "current"
