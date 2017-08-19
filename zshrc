@@ -637,12 +637,14 @@ libc() {
 
 
 ##----------------alias------------
+#-------------Archlinux
 alias contrast='xcalib -a -co'
 alias scrrst='xcalib -c'
 alias setlumi='xrandr --output "eDP1" --brightness'
 alias mkdir="nocorrect mkdir"
 alias help-zshglob=H-Glob
 alias sterm="terminator -m --layout=dfllay"
+alias open="xdg-open"
 # Les alias marchent comme sous bash
 alias src='source ~/.zshrc'
 alias jobs='jobs -l'
@@ -668,8 +670,8 @@ alias pt='peer_tools'
 alias ions='ionic serve -g'
 alias pmk='pm2 kill'
 alias pml='pm2 log'
-alias npmrs='npm run serv:dev'
-alias pmm='pm2 monit'
+alias npmrs='npm run start:development'
+alias pmm='pm2 imonit'
 
 # -------------------------------------------------------------------
 # Git
