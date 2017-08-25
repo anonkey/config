@@ -1,8 +1,8 @@
-source ~/.vimclangcomp
+"source ~/.vimclangcomp
 set wildmenu
 set wildmode=list:longest
 
-:runtime "~/.vim/bundle/vim_bundles/structgen/structgen.vim"
+runtime ~/.vim/bundle/vim_bundles/structgen/structgen.vim
 
 if has("autocmd")
 filetype plugin indent on
@@ -50,8 +50,8 @@ noremap <C-l> :match
 inoremap <C-l> <Esc>:match
 noremap <C-o> :call Struct("")
 inoremap <C-o> <Esc>:call Struct("")
-map <C-Tab> gt
-map <C-S-Tab> gT
+noremap <C-Tab> gt
+noremap <C-S-Tab> gT
 map <Esc>Oq 1
 map <Esc>Or 2
 map <Esc>Os 3
@@ -87,7 +87,7 @@ map! <Esc>OS -
 "highlight ExtraWhitespace ctermbg=red ctermfg=white guibg=red
 "match ExtraWhitespace /\s\n/
 set list
-set listchars=trail:·,tab:>·
+set listchars=trail:-,tab:>-
 highlight SpecialKey guifg=blue ctermfg=lightblue
 highlight ExtraWhitespace ctermbg=red guibg=red
 highlight MissingWhitespace ctermbg=green guibg=green

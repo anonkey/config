@@ -18,7 +18,13 @@ export HISTFILE SAVEHIST
 export PATH=/usr/bin:/usr/local/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/texbin
 export PATH=$HOME/.brew/bin/:$PATH
 export PATH=$HOME/sh_plugins/bin:$PATH
-
+export PATH=~/Android/Sdk/tools:$PATH
+export PATH=~/Android/Sdk/tools/bin:$PATH
+export PATH=~/Android/Sdk/platform-tools:$PATH
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk/
+export ANDROID_SDK_ROOT=~/Android/Sdk
+export ANDROID_HOME=~/Android/Sdk
+#sudo archlinux-java set java-8-openjdk
 
 #export $BROWSER=cat
 # un VRAI éditeur de texte ;)
@@ -30,7 +36,7 @@ SPROMPT='zsh: correct '%R' : '%r' ? ([Y]es/[n]o/[e]dit/[a]bort) '
 
 if [[ -z $SSH_CLIENT ]]; then
 	##		Std prompt
-	PROMPT="%B%{$fg[red]%}[%T]%{$reset_color%}%{$fg[green]%}%B %n:%1~/%{$reset_color%}%B%#~>%b "
+	PROMPT="%B%{$fg[red]%}[%T]%{$reset_color%}%{$fg_bold[green]%}%B %n:%1~/%{$reset_color%}%B%#~>%b "
 else
 	PROMPT="%B%{$fg[cyan]%}[%{$fg[red]%}ssh:%B%{$fg[red]%}[%T]%{$reset_color%}%{$fg[green]%}%B %n:%1~/%{$reset_color%}%B%#~>%b "
 fi
@@ -218,7 +224,6 @@ zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
 ## filename suffixes to ignore during completion (except after rm command)
 zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.(o|c~|old|pro|zwc|sw)'
 zstyle ':completion:*:options' list-colors '=^(-- *)=34'
-
 zstyle ':completion:*:processes-names' command 'ps axho command' 
 zstyle ':completion:*:urls' local 'www' '/var/www/htdocs' 'public_html'
 zstyle ':completion:*' hosts $(awk '/^[^#]/ {print $2 $3" "$4" "$5}' /etc/hosts | grep -v ip6- && grep "^#%" /etc/hosts | awk -F% '{print $2}') 
@@ -231,6 +236,7 @@ zstyle ':completion:*' list-prompt '%SAt %p: Hit TAB for more, or the character 
 
 # Make the selection prompt friendly when there are a lot of choices
 zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+
 
 ##----------------------------- Key bindings-----------------------
 #bindkey "^x^e" expand-cmd-path
@@ -276,7 +282,7 @@ bindkey '<ctrl-e>' end-of-line
 insert-datestamp() { LBUFFER+=${(%):-'%D{%d-%m-%Y }'}; }
 zle -N insert-datestamp
 #k# Insert a timestamp on the command line (yyyy-mm-dd)
-bindkey '^Ed' insert-datestamp
+bindkey '<ctrl-1>' insert-datestamp
 
 insert-timestamp() { LBUFFER+=${(%):-'%D{%H:%M }'}; }
 zle -N insert-timestamp
@@ -641,6 +647,9 @@ libc() {
 alias contrast='xcalib -a -co'
 alias scrrst='xcalib -c'
 alias setlumi='xrandr --output "eDP1" --brightness'
+alias wifi="sudo wifi-menu"
+
+
 alias mkdir="nocorrect mkdir"
 alias help-zshglob=H-Glob
 alias sterm="terminator -m --layout=dfllay"
@@ -658,7 +667,7 @@ alias fclean='make fclean'
 alias clean='make clean'
 alias tf='tail -F'
 alias mk='mkdir-cd'
-alias ip="ifconfig | grep 'inet'"
+alias getip="(ifconfig || ip addr) | grep 'inet '"
 alias grn="grep -Rn"
 alias aspi='wget -rkpE'
 alias siz='du -sh'
@@ -667,11 +676,13 @@ alias pt='peer_tools'
 # -------------------------------------------------------------------
 # Web
 # -------------------------------------------------------------------
-alias ions='ionic serve -g'
+alias ions='ionic serve'
 alias pmk='pm2 kill'
 alias pml='pm2 log'
-alias npmrs='npm run start:development'
 alias pmm='pm2 imonit'
+alias npmrd='npm run start:development'
+alias npmrs='npm run start:staging'
+alias npms='npm start'
 
 # -------------------------------------------------------------------
 # Git
@@ -679,8 +690,9 @@ alias pmm='pm2 imonit'
 alias gc='git clone'
 alias ga='git add'
 alias gco='git commit -m'
-alias gca='git commit -am'
+alias gca='git commit --amend'
 alias gp='git push'
+alias grb='git rebase'
 alias gpl='git pull'
 alias glog='git log'
 alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
@@ -721,6 +733,7 @@ alias ll='ls -l'
 alias lr='ls -R'
 alias llr='ls -lR'
 alias lar='ls -aR'
+alias lra='ls -aR'
 alias llar='ls -laR'
 
 # Vim
@@ -796,8 +809,8 @@ alias onoz='cat /var/log/errors.log'
 alias rtfm='man'
 
 ##----------------setopt-----------
-setopt no_beep # don't beep on error
-setopt hist_verify # don't beep on error
+setopt no_beep # dont beep on error
+setopt hist_verify # dont beep on error
 
 ## History options
 setopt incappendhistory \
