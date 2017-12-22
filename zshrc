@@ -672,27 +672,36 @@ alias grn="grep -Rn"
 alias aspi='wget -rkpE'
 alias siz='du -sh'
 alias pt='peer_tools'
-
 # -------------------------------------------------------------------
 # Web
 # -------------------------------------------------------------------
+alias a='atom'
+alias aa='atom -a'
+alias ast='android-studio'
 alias ions='ionic serve'
 alias pmk='pm2 kill'
 alias pml='pm2 log'
+alias pms='pm2 stop'
 alias pmm='pm2 imonit'
-alias npmrd='npm run start:development'
-alias npmrs='npm run start:staging'
+alias npmrd='npm run development'
+alias npmrs='npm run staging'
 alias npms='npm start'
 
 # -------------------------------------------------------------------
 # Git
 # -------------------------------------------------------------------
 alias gc='git clone'
+alias gfa='git fetch --all'
+alias gst='git stash'
+alias gstp='git stash pop'
 alias ga='git add'
+alias gap='git add -p'
 alias gco='git commit -m'
 alias gca='git commit --amend'
 alias gp='git push'
+alias gpo='git push origin'
 alias grb='git rebase'
+alias grbs='git rebase origin/staging'
 alias gpl='git pull'
 alias glog='git log'
 alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
@@ -826,3 +835,10 @@ unsetopt list_ambigous
 
 ## Login Pic
 startanim
+alias npmsd="npm i --save-dev"
+alias npmsv="npm i --save"
+alias inotify='sudo sysctl -w fs.inotify.max_user_instances=10240 &&  sudo sysctl -w fs.inotify.max_user_watches=122880'
+source /usr/share/nvm/init-nvm.sh
+alias nst="npm-scripts-tree"
+alias nexus='emulator -avd Nexus_4_API_22'
+alias updateGl="git stash && git checkout staging && git fetch --all && git rebase origin/staging && rm .babelrc"
