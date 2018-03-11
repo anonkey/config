@@ -42,7 +42,7 @@ else
 fi
 
 ##		Std right prompt
-RPROMPT="%{$fg[green]%}%B[(%?) %D{%d/%m/%y}]%{$reset_color%}" 
+RPROMPT="%{$fg[green]%}%B[(%?) %D{%d/%m/%y}]%{$reset_color%}"
 ##		Secondary prompt, printed when the shell needs more information to complete a command.
 PS2="%{$fg[green]%}%B\`%_%{$reset_color%}> "
 ##		Selection prompt used within a select loop.
@@ -213,7 +213,7 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
 ## ignore completion functions (until the _ignored completer)
 zstyle ':completion:*:functions' ignored-patterns '_*'
-  
+
 
 ## add colors to completions
 zstyle ':completion:*' list-colors ${(s.:.)LSCOLORS}
@@ -224,11 +224,11 @@ zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
 ## filename suffixes to ignore during completion (except after rm command)
 zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.(o|c~|old|pro|zwc|sw)'
 zstyle ':completion:*:options' list-colors '=^(-- *)=34'
-zstyle ':completion:*:processes-names' command 'ps axho command' 
+zstyle ':completion:*:processes-names' command 'ps axho command'
 zstyle ':completion:*:urls' local 'www' '/var/www/htdocs' 'public_html'
-zstyle ':completion:*' hosts $(awk '/^[^#]/ {print $2 $3" "$4" "$5}' /etc/hosts | grep -v ip6- && grep "^#%" /etc/hosts | awk -F% '{print $2}') 
+zstyle ':completion:*' hosts $(awk '/^[^#]/ {print $2 $3" "$4" "$5}' /etc/hosts | grep -v ip6- && grep "^#%" /etc/hosts | awk -F% '{print $2}')
 zstyle ':completion:*:functions' ignored-patterns '_*'
-zstyle ':completion:*:*:*:users' ignored-patterns 
+zstyle ':completion:*:*:*:users' ignored-patterns
 zstyle ':completion:*:(ssh|scp|ftp):*' hosts $hosts
 zstyle ':completion:*:(ssh|scp|ftp):*' users $users
 # Make the list prompt friendly
@@ -383,13 +383,10 @@ backconf() {
 		confdir=~/config
     fi
 	cd $confdir
-	cp -r ~/sh_plugins $confdir/sh_plugins \
-		&& cp ~/.zshrc $confdir/zshrc \
-		&& cp ~/.vimrc $confdir/vimrc \
-		&& cp -R ~/.vim  $confdir/vim \
-		&& git add -A \
-		&& git commit -am "autocommit `date`" \
-		&& git push origin master
+	cp -ufr ~/sh_plugins $confdir/sh_plugins \
+		&&  cp -uf ~/.zshrc $confdir/zshrc \
+		&&  cp -uf ~/.vimrc $confdir/vimrc \
+		&&  cp -ufR ~/.vim  $confdir/vim
 	cd -
 }
 
@@ -407,11 +404,10 @@ restconf() {
 		confdir=~/config
     fi
 	cd $confdir
-		git pull origin master \
-		&& cp -r $confdir/sh_plugins ~/sh_plugins \
-		&& cp $confdir/zshrc ~/.zshrc \
-		&& cp $confdir/vimrc ~/.vimrc \
-		&& cp -R  $confdir/vim ~/.vim \
+		cp -ufr $confdir/sh_plugins/* ~/sh_plugins \
+		&& cp -uf $confdir/zshrc ~/.zshrc \
+		&& cp -uf $confdir/vimrc ~/.vimrc \
+		&& cp -ufR  $confdir/vim ~/.vim
 	cd -
 }
 
@@ -654,6 +650,14 @@ alias mkdir="nocorrect mkdir"
 alias help-zshglob=H-Glob
 alias sterm="terminator -m --layout=dfllay"
 alias open="xdg-open"
+alias syslog="journalctl -xe"
+##------sysctl
+alias sysactive='sudo systemctl is-active'
+alias sysstat='sudo systemctl status'
+alias sysstart='sudo systemctl start'
+alias sysstop='sudo systemctl stop'
+alias sysres='sudo systemctl restart'
+alias sysrel='sudo systemctl reload'
 # Les alias marchent comme sous bash
 alias src='source ~/.zshrc'
 alias jobs='jobs -l'
@@ -701,6 +705,7 @@ alias gca='git commit --amend'
 alias gp='git push'
 alias gpo='git push origin'
 alias grb='git rebase'
+alias gfa='git fetch --all'
 alias grbs='git rebase origin/staging'
 alias gpl='git pull'
 alias glog='git log'
@@ -721,7 +726,7 @@ alias gv='git log --pretty=format:'%s' | cut -d " " -f 1 | sort | uniq -c | sort
 alias gh='git hist'
 alias gt="git log --since=midnight --author='$(git config user.name)' --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias gy="git log --since=1.week --author='$(git config user.name)' --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-# curiosities 
+# curiosities
 # gsh shows the number of commits for the current repos for all developers
 alias gsh="git shortlog | grep -E '^[ ]+\w+' | wc -l"
 # gu shows a list of all developers and the number of commits they've made
@@ -793,7 +798,7 @@ alias -s php=$EDITOR
 alias sl='ls'
 # Alias df -h
 alias df='df -h'
-# on ne peut pas utiliser GREP_OPTIONS pour rajouter la couleur car cela 
+# on ne peut pas utiliser GREP_OPTIONS pour rajouter la couleur car cela
 # casse /usr/bin/grep sur les freebsd
 #export GREP_OPTIONS="--color=auto"
 alias grep='grep --color=auto'
@@ -835,10 +840,18 @@ unsetopt list_ambigous
 
 ## Login Pic
 startanim
+alias npmi="npm install"
+alias npms="npm install --save"
+alias npmsd="npm install --save-dev"
+alias nst="npm-scripts-tree -p"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 alias npmsd="npm i --save-dev"
 alias npmsv="npm i --save"
 alias inotify='sudo sysctl -w fs.inotify.max_user_instances=10240 &&  sudo sysctl -w fs.inotify.max_user_watches=122880'
 source /usr/share/nvm/init-nvm.sh
 alias nst="npm-scripts-tree"
 alias nexus='emulator -avd Nexus_4_API_22'
-alias updateGl="git stash && git checkout staging && git fetch --all && git rebase origin/staging && rm .babelrc"
+alias updateGl="git stash && git checkout development && git fetch --all && git rebase origin/development && rm .babelrc"

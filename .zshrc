@@ -377,10 +377,10 @@ backconf() {
 		confdir=~/config
     fi
 	cd $confdir
-	cp -r ~/sh_plugins $confdir/sh_plugins \
-		&& cp ~/.zshrc $confdir/zshrc \
-		&& cp ~/.vimrc $confdir/vimrc \
-		&& cp -R ~/.vim  $confdir/vim \
+	\cp -r ~/sh_plugins $confdir/sh_plugins \
+		&& \cp ~/.zshrc $confdir/zshrc \
+		&& \cp ~/.vimrc $confdir/vimrc \
+		&& \cp -R ~/.vim  $confdir/vim \
 		&& git add -A \
 		&& git commit -am "autocommit `date`" \
 		&& git push origin master
@@ -402,10 +402,10 @@ restconf() {
     fi
 	cd $confdir
 		git pull origin master \
-		&& cp -r $confdir/sh_plugins ~/sh_plugins \
-		&& cp $confdir/zshrc ~/.zshrc \
-		&& cp $confdir/vimrc ~/.vimrc \
-		&& cp -R  $confdir/vim ~/.vim \
+		&& \cp -r $confdir/sh_plugins/* ~/sh_plugins \
+		&& \cp $confdir/zshrc ~/.zshrc \
+		&& \cp $confdir/vimrc ~/.vimrc \
+		&& \cp -R  $confdir/vim ~/.vim \
 	cd -
 }
 
