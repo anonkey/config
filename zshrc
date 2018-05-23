@@ -855,3 +855,7 @@ source /usr/share/nvm/init-nvm.sh
 alias nst="npm-scripts-tree"
 alias nexus='emulator -avd Nexus_4_API_22'
 alias updateGl="git stash && git checkout development && git fetch --all && git rebase origin/development && rm .babelrc"
+alias grbd='git rebase origin/development'
+alias grbm='git rebase origin/master'
+export LOGIN_URL="http://login-development.faste.com"
+alias adbrev="adb reverse tcp:19001 tcp:19001"
