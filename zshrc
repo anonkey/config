@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 #
+OS=`uname`
 autoload colors; colors
 ###----------------export-----------
 # support colors in less
@@ -383,11 +384,15 @@ backconf() {
 		confdir=~/config
     fi
 	cd $confdir
-	cp -ufr ~/sh_plugins $confdir/sh_plugins \
-		&&  cp -uf ~/.zshrc $confdir/zshrc \
-		&&  cp -uf ~/.vimrc $confdir/vimrc \
-		&&  cp -ufR ~/.vim  $confdir/vim
+	cp -fR ~/sh_plugins $confdir/sh_plugins \
+		&&  cp -f ~/.zshrc $confdir/zshrc \
+		&&  cp -f ~/.vimrc $confdir/vimrc \
+		&&  cp -fR ~/.vim  $confdir/vim
 	cd -
+}
+
+memuse() {
+ ps -eo pmem,pcpu,vsize,pid,comm G -i $1| sed -E "s/[[:space:]]+/ /g" | cut -d ' ' -f 4 | paste -sd "+" - | bc |awk '{ split( "B KB MB GB" , v ); s=1; while( $1>1024 ){ $1/=1024; s++ } print int($1) v[s] }'
 }
 
 restconf() {
@@ -404,10 +409,10 @@ restconf() {
 		confdir=~/config
     fi
 	cd $confdir
-		cp -ufr $confdir/sh_plugins/* ~/sh_plugins \
-		&& cp -uf $confdir/zshrc ~/.zshrc \
-		&& cp -uf $confdir/vimrc ~/.vimrc \
-		&& cp -ufR  $confdir/vim ~/.vim
+		cp -fR $confdir/sh_plugins/* ~/sh_plugins \
+		&& cp -f $confdir/zshrc ~/.zshrc \
+		&& cp -f $confdir/vimrc ~/.vimrc \
+		&& cp -fR  $confdir/vim ~/.vim
 	cd -
 }
 
@@ -649,7 +654,10 @@ alias wifi="sudo wifi-menu"
 alias mkdir="nocorrect mkdir"
 alias help-zshglob=H-Glob
 alias sterm="terminator -m --layout=dfllay"
-alias open="xdg-open"
+if [ "$OS" != 'Darwin' ]
+then
+  alias open="xdg-open"
+fi
 alias syslog="journalctl -xe"
 ##------sysctl
 alias sysactive='sudo systemctl is-active'
@@ -659,6 +667,11 @@ alias sysstop='sudo systemctl stop'
 alias sysres='sudo systemctl restart'
 alias sysrel='sudo systemctl reload'
 # Les alias marchent comme sous bash
+alias backup="rsync -a --stats --progress --delete --exclude '*.app' --exclude '.expo'  --exclude '.gem'  --exclude '.docker'  --exclude '.Trash'  --exclude '.electron'   --exclude '.npm' --exclude '.nvm' --exclude '.cocoapods' --exclude 'Applications' --exclude 'Library' "
+## OSX
+#
+alias fusemount="sudo ntfs-3g -olocal -oallow_other"
+#
 alias src='source ~/.zshrc'
 alias jobs='jobs -l'
 alias nrma="norminette ***/*.[hc]"
@@ -679,6 +692,7 @@ alias pt='peer_tools'
 # -------------------------------------------------------------------
 # Web
 # -------------------------------------------------------------------
+alias watchclear='watchman watch-del-all && watchman shutdown-server'
 alias a='atom'
 alias aa='atom -a'
 alias ast='android-studio'
@@ -690,6 +704,15 @@ alias pmm='pm2 imonit'
 alias npmrd='npm run development'
 alias npmrs='npm run staging'
 alias npms='npm start'
+alias npmi="npm install"
+alias npmsd="npm install --save-dev"
+alias npmsv="npm i --save"
+alias nst="npm-scripts-tree -p"
+alias adbrev="adb reverse tcp:19001 tcp:19001"
+alias nexus='emulator -avd Nexus_4_API_22'
+alias updateGl="git stash && git checkout development && git fetch --all && git rebase origin/development && rm .babelrc"
+alias updatepro='./update.sh && PIPELINE=development ./setup.sh'
+
 
 # -------------------------------------------------------------------
 # Git
@@ -716,12 +739,13 @@ alias gm='git merge'
 alias gmt='git mergetool'
 alias gb='git branch'
 alias gck='git checkout'
+alias gckd='git checkout development'
 alias gckb='git checkout -b'
 alias gra='git remote add'
 alias grr='git remote rm'
 # alias gta='git tag -a -m'
 alias gf='git reflog'
-alias gv='git log --pretty=format:'%s' | cut -d " " -f 1 | sort | uniq -c | sort -nr'
+alias gv='git log --pretty=format:'%s' | sed -e "s/ *\(\[.*\]\).*/\1/" | sort | uniq -c | sort -nr'
 # leverage aliases from ~/.gitconfig
 alias gh='git hist'
 alias gt="git log --since=midnight --author='$(git config user.name)' --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
@@ -731,6 +755,12 @@ alias gy="git log --since=1.week --author='$(git config user.name)' --pretty=for
 alias gsh="git shortlog | grep -E '^[ ]+\w+' | wc -l"
 # gu shows a list of all developers and the number of commits they've made
 alias gu="git shortlog | grep -E '^[^ ]'"
+
+alias grbd='git rebase origin/development'
+alias grbm='git rebase origin/master'
+alias grst="git reset"
+alias grsth="git reset HEAD"
+alias grst1="git reset HEAD~1"
 
 # Taf
 alias taf='. taf'
@@ -749,6 +779,10 @@ alias llr='ls -lR'
 alias lar='ls -aR'
 alias lra='ls -aR'
 alias llar='ls -laR'
+
+
+# Shell
+alias escaper='printf "%q"'
 
 # Vim
 alias vimp="vim -p"
@@ -840,22 +874,33 @@ unsetopt list_ambigous
 
 ## Login Pic
 startanim
-alias npmi="npm install"
-alias npms="npm install --save"
-alias npmsd="npm install --save-dev"
-alias nst="npm-scripts-tree -p"
 
+## NVM
+export NPM_TOKEN="2755a69e-fada-4e1b-9438-719a9767ab74"
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-alias npmsd="npm i --save-dev"
-alias npmsv="npm i --save"
-alias inotify='sudo sysctl -w fs.inotify.max_user_instances=10240 &&  sudo sysctl -w fs.inotify.max_user_watches=122880'
-source /usr/share/nvm/init-nvm.sh
-alias nst="npm-scripts-tree"
-alias nexus='emulator -avd Nexus_4_API_22'
-alias updateGl="git stash && git checkout development && git fetch --all && git rebase origin/development && rm .babelrc"
-alias grbd='git rebase origin/development'
-alias grbm='git rebase origin/master'
+
+if [ "$OS" = "Darwin" ]
+then
+  . "/usr/local/opt/nvm/nvm.sh"
+else
+	[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+fi
+# This loads nvm
+
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+if [ "$OS" = "Darwin" ]
+then
+ alias inotify='sudo sysctl -w kern.maxfiles=5242880 && sudo sysctl -w kern.maxfilesperproc=524288'
+else
+  alias inotify='sudo sysctl -w fs.inotify.max_user_instances=10240 &&  sudo sysctl -w fs.inotify.max_user_watches=122880'
+fi
+
 export LOGIN_URL="http://login-development.faste.com"
-alias adbrev="adb reverse tcp:19001 tcp:19001"
+
+export PATH="/usr/local/opt/openssl/bin:$PATH"
+export PATH="/usr/local/opt/sqlite/bin:$PATH"
+
+# added by travis gem
+[ -f /Users/developer/.travis/travis.sh ] && source /Users/developer/.travis/travis.sh
