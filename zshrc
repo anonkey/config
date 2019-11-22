@@ -2,7 +2,8 @@
 #
 OS=`uname`
 autoload colors; colors
-###----------------export-----------
+autoload _ssh_hosts
+##----------------export-----------
 # support colors in less
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;31m'
@@ -22,7 +23,11 @@ export PATH=$HOME/sh_plugins/bin:$PATH
 export PATH=~/Android/Sdk/tools:$PATH
 export PATH=~/Android/Sdk/tools/bin:$PATH
 export PATH=~/Android/Sdk/platform-tools:$PATH
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk/
+export PATH="/usr/local/opt/openssl/bin:$PATH"
+export PATH="/usr/local/opt/sqlite/bin:$PATH"
+export PATH="/home/key/.local/bin:$PATH"
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
 export ANDROID_SDK_ROOT=~/Android/Sdk
 export ANDROID_HOME=~/Android/Sdk
 #sudo archlinux-java set java-8-openjdk
@@ -644,10 +649,13 @@ libc() {
 
 
 ##----------------alias------------
+# Docker
+alias dockerls="docker container list"
+alias dockerkillall='docker kill $(docker ps -q)'
 #-------------Archlinux
 alias contrast='xcalib -a -co'
 alias scrrst='xcalib -c'
-alias setlumi='xrandr --output "eDP1" --brightness'
+alias setlumi='xrandr --output "eDP-1" --brightness'
 alias wifi="sudo wifi-menu"
 
 
@@ -707,6 +715,10 @@ alias npms='npm start'
 alias npmi="npm install"
 alias npmsd="npm install --save-dev"
 alias npmsv="npm i --save"
+alias yarnd='yarn dev'
+alias yarna='yarn add'
+alias yarnad='yarn add -D'
+alias yarni='yarn install'
 alias nst="npm-scripts-tree -p"
 alias adbrev="adb reverse tcp:19001 tcp:19001"
 alias nexus='emulator -avd Nexus_4_API_22'
@@ -899,8 +911,15 @@ fi
 
 export LOGIN_URL="http://login-development.faste.com"
 
-export PATH="/usr/local/opt/openssl/bin:$PATH"
-export PATH="/usr/local/opt/sqlite/bin:$PATH"
 
 # added by travis gem
 [ -f /Users/developer/.travis/travis.sh ] && source /Users/developer/.travis/travis.sh
+export GITLAB_USERNAME=t.seguier.ext_azu
+export GITLAB_TOKEN=K68CdJWiFbC6wWH-c7CX
+#export GITLAB_USER=api
+#export GITLAB_ACCESS_TOKEN=n_4dVNaz6_pTDnBdgETP
+alias composer="composer -vvv"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/key/.sdkman"
+[[ -s "/home/key/.sdkman/bin/sdkman-init.sh" ]] && source "/home/key/.sdkman/bin/sdkman-init.sh"
